@@ -46,15 +46,19 @@ class VKBot:
         response = repl.json()
         try:
             information_list = response['response']
-            for i in information_list:
-                if i.get('sex') == 2:
-                    find_sex = 1
-                    return find_sex
-                elif i.get('sex') == 1:
-                    find_sex = 2
-                    return find_sex
         except KeyError:
-            self.write_msg(user_id, 'Ошибка acces_token')
+            print('Ошибка получения пола пользователя')
+            return[]
+        
+        find_sex = []
+        for i in information_list:
+            if i.get('sex') == 2:
+                find_sex = 1
+                return find_sex
+            elif i.get('sex') == 1:
+                find_sex = 2
+         return find_sex
+       
 
     def get_age_low(self, user_id):
         url = f'https://api.vk.com/method/users.get'
@@ -64,24 +68,27 @@ class VKBot:
                   'v': '5.131'}
         repl = requests.get(url, params=params)
         response = repl.json()
+        
         try:
             information_list = response['response']
-            for i in information_list:
-                date = i.get('bdate')
-            date_list = date.split('.')
-            if len(date_list) == 3:
-                year = int(date_list[2])
-                year_now = int(datetime.date.today().year)
-                return year_now - year
-            elif len(date_list) == 2 or date not in information_list:
-                self.write_msg(user_id, 'Введите нижний порог возраста (min - 16): ')
-                for event in self.longpoll.listen():
-                    if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-                        age = event.text
-                        return age
         except KeyError:
-            self.write_msg(user_id, 'Ошибка acces_token')
-
+            print('Ошибка получения возраста пользователя')
+            return[]
+        age = []       
+        for i in information_list:
+            date = i.get('bdate')
+        date_list = date.split('.')
+        if len(date_list) == 3:
+            year = int(date_list[2])
+            year_now = int(datetime.date.today().year)
+            return year_now - year
+        elif len(date_list) == 2 or date not in information_list:
+            self.write_msg(user_id, 'Введите нижний порог возраста (min - 16): ')
+            for event in self.longpoll.listen():
+                if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+                    age = event.text
+        return age
+ 
 
     def get_age_high(self, user_id):
         url = f'https://api.vk.com/method/users.get'
