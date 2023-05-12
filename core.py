@@ -26,12 +26,15 @@ class VKBot:
         response = repl.json()
         try:
             information_dict = response['response']
-            for i in information_dict:
-                for key, value in i.items():
-                    first_name = i.get('first_name')
-                    return first_name
         except KeyError:
-            self.write_msg(user_id, 'Ошибка acces_token')
+            print('Ошибрка получения имени пользователя')
+            return[]
+        first_name = []
+        for i in information_dict:
+            for key, value in i.items():
+                first_name = i.get('first_name')
+        return first_name
+        
 
     def get_sex(self, user_id):
         url = f'https://api.vk.com/method/users.get'
